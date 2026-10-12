@@ -1,98 +1,226 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { useState } from "react";
+import { Redirect, useRouter } from "expo-router";
+import { useAppSelector } from "@/store";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function LoginScreen() {
+  const { token, user } = useAppSelector((s) => s.auth);
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
+  const [seeker, setSeeker] = useState(false);
+  const [owner, setOwner] = useState(false);
+
+  const router = useRouter();
+
+  const colorScheme = useColorScheme();
+
+  const themeColor = colorScheme === "dark" ? "#fff" : "#2A1A0F";
+
+  const orangeColor = "#C2410C";
+  const brownColor = "#6B5446";
+  const blackColor = "#2A1A0F";
+  const bgBtnColor = "#FFEDD5";
+  
+  if (token)
     return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
+      <Redirect
+        href={user?.role === "owner" ? "/owner/addApartment" : "/renter/explore"}
+      />
     );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={[styles.safeAreaView]}>
+      <KeyboardAvoidingView
+        style={[styles.keyboardavoidingview]}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ paddingHorizontal: 24, paddingVertical: 30 }}
+        >
+          {/* 1 section */}
+          <View
+            style={[
+              {
+                flexDirection: "row",
+                gap: 10,
+                alignItems: "center",
+              },
+            ]}
+          >
+            <Pressable
+              style={[
+                {
+                  backgroundColor: "#EA580C",
+                  padding: 5,
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: 5,
+                },
+              ]}
+            >
+              <Ionicons name="home-outline" size={24} color="#fff" />
+            </Pressable>
+            <Text
+              style={[{ color: themeColor, fontWeight: "600", fontSize: 20 }]}
+            >
+              Baan
+            </Text>
+          </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+          {/* 2 section */}
+          <Image
+            source={require("../../assets/images/reservation_images/welcome.png")}
+            style={{
+              width: "100%",
+              height: 220,
+              borderRadius: 22,
+              marginTop: 25,
+            }}
+            contentFit="cover"
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+          {/* 3 section */}
+          <View>
+            <Text
+              style={[
+                {
+                  color: themeColor,
+                  fontSize: 30,
+                  marginTop: 15,
+                  fontWeight: "600",
+                },
+              ]}
+            >
+              Find your next home, or fill your rooms.
+            </Text>
+            <Text style={[{ color: themeColor, fontSize: 15, marginTop: 15 }]}>
+              Tell us who you are and we’ll set things up for you.
+            </Text>
+          </View>
+
+          {/* 4 section */}
+          <Pressable
+            onPressIn={() => setSeeker(true)}
+            onPressOut={() => setSeeker(false)}
+            onPress={() => router.push("/login")}
+            style={({ pressed }) => [
+              {
+                padding: 16,
+                borderWidth: 2,
+                borderColor: seeker ? orangeColor : blackColor,
+                backgroundColor: "#fff",
+                borderRadius: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 25,
+                transform: [{ scale: pressed ? 0.99 : 1 }],
+              },
+            ]}
+          >
+            <View
+              style={[
+                {
+                  backgroundColor: bgBtnColor,
+                  borderRadius: 8,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 9,
+                },
+              ]}
+            >
+              <Ionicons name="search" size={20} color={orangeColor} />
+            </View>
+            <View>
+              <Text style={[{ color: blackColor, fontWeight: "600" }]}>
+                I'm looing for a place
+              </Text>
+              <Text style={{ color: brownColor }}>
+                Browse and reserve apartments
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward-outline"
+              size={25}
+              color={orangeColor}
+            />
+          </Pressable>
+
+          {/* 5 section */}
+          <Pressable
+            onPressIn={() => setOwner(true)}
+            onPressOut={() => setOwner(false)}
+            onPress={() => router.push("/login")}
+            style={({ pressed }) => [
+              {
+                padding: 16,
+                borderWidth: 2,
+                borderColor: owner ? orangeColor : blackColor,
+                backgroundColor: "#fff",
+                borderRadius: 20,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: 25,
+                transform: [{ scale: pressed ? 0.99 : 1 }],
+              },
+            ]}
+          >
+            <View
+              style={[
+                {
+                  backgroundColor: bgBtnColor,
+                  borderRadius: 8,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  paddingVertical: 5,
+                  paddingHorizontal: 9,
+                },
+              ]}
+            >
+              <Ionicons name="search" size={20} color={orangeColor} />
+            </View>
+            <View>
+              <Text style={[{ color: blackColor, fontWeight: "600" }]}>
+                I own apartment
+              </Text>
+              <Text style={{ color: brownColor }}>
+                List rooms and manage bookings
+              </Text>
+            </View>
+            <Ionicons
+              name="chevron-forward-outline"
+              size={25}
+              color={orangeColor}
+            />
+          </Pressable>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeAreaView: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
   },
-  safeArea: {
+  keyboardavoidingview: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
   },
 });
