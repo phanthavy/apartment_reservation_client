@@ -1,11 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import authReducer from "./slices/auth/authSlice";
+import apartmentReducer from "./slices/apartment/apartmentSlice";
 import { injectStore } from "../config/axiosInstance";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    apartment: apartmentReducer,
   },
 });
 

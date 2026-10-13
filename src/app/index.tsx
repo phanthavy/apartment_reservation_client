@@ -31,11 +31,13 @@ export default function LoginScreen() {
   const brownColor = "#6B5446";
   const blackColor = "#2A1A0F";
   const bgBtnColor = "#FFEDD5";
-  
+
   if (token)
     return (
       <Redirect
-        href={user?.role === "owner" ? "/owner/addApartment" : "/renter/explore"}
+        href={
+          user?.role === "owner" ? "/owner/reviewAndPublic" : "/renter/explore"
+        }
       />
     );
 
